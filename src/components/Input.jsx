@@ -71,12 +71,32 @@ const Input = () => {
                 }, 4000);
             }
         } catch (error) {
-            setMessage("Something went wrong. Try again.");
-            setAlertType("error");
+            // Handle rate limit error 
+            if (error.response?.status === 429) {
+                // Check if server returns custom message
+                const errorMessage = error.response?.data?.message ||
+                    "Too many requests. Please wait a moment before trying again.";
+                setMessage(errorMessage);
+                setAlertType("warning");
+            } else if (error.response?.status === 400) {
+                // Handle validation errors from server
+                setMessage(error.response?.data?.message || "Invalid request");
+                setAlertType("error");
+            } else if (error.response?.status === 500) {
+                setMessage("Server error. Please try again later.");
+                setAlertType("error");
+            } else if (error.code === "ECONNABORTED" || error.message === "Network Error") {
+                setMessage("Network error. Check your connection.");
+                setAlertType("error");
+            } else {
+                setMessage("Something went wrong. Try again.");
+                setAlertType("error");
+            }
+
             setShowAlert(true);
             setTimeout(() => {
                 setShowAlert(false);
-            }, 4000);
+            }, 5000); // Show rate limit message longer (5 seconds)
         } finally {
             setIsLoading(false);
         }
@@ -84,6 +104,8 @@ const Input = () => {
 
     const handleClear = () => {
         setValue("");
+        setShortURL(null);
+        setShowAlert(false); // Clear alert when clearing input
     };
 
     return (
@@ -93,7 +115,12 @@ const Input = () => {
 
                     {showAlert && (
                         <div className="w-full">
-                            <Alert severity={alertType}>{message}</Alert>
+                            <Alert
+                                severity={alertType}
+                                onClose={() => setShowAlert(false)}
+                            >
+                                {message}
+                            </Alert>
                         </div>
                     )}
 
@@ -109,6 +136,7 @@ const Input = () => {
                         onChange={(e) => {
                             setValue(e.target.value)
                             setShortURL(null);
+                            setShowAlert(false); // Hide alert when user starts typing
                         }}
                         disabled={isLoading}
                         value={value}
@@ -137,8 +165,8 @@ const Input = () => {
             </div>
 
             {shortURL && (
-                <p className="py-6  text-center text-blue-500 underline break-all">
-                    <span className="shadow-sm p-2 ">
+                <p className="py-6 text-center text-blue-500 underline break-all">
+                    <span className="shadow-sm p-2  ">
                         <a href={shortURL} target="_blank" rel="noopener noreferrer">
                             {shortURL}
                         </a>
