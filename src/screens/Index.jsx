@@ -7,7 +7,7 @@ import Footer from '../components/Footer'
 const Index = () => {
   return (
     <>
-      <div className='px-2 max-w-350 w-full mx-auto'>
+      <div className='px-2 w-full mx-auto relative' style={{ maxWidth: '1400px' }} >
         <Navbar />
         <Input />
         <CardLayout />

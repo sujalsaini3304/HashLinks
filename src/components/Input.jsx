@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { Alert } from "@mui/material";
 import axios from "axios";
 import useStore from "../../store";
+import { getAuthHeaders } from "../utils/authHeaders";
 
 const Input = () => {
     const { setShortURL, shortURL } = useStore();
@@ -52,12 +53,14 @@ const Input = () => {
         try {
             setIsLoading(true);
 
+            const headers = await getAuthHeaders();
+
             const response = await axios.post(
                 `${import.meta.env.VITE_HOSTSERVER}/api/add/link`,
                 {
-                    email: "sujalsaini3304@gmail.com",
                     originalURL: value,
-                }
+                },
+                { headers }
             );
 
             if (response?.data?.shortURL) {
@@ -85,9 +88,15 @@ const Input = () => {
             } else if (error.response?.status === 500) {
                 setMessage("Server error. Please try again later.");
                 setAlertType("error");
+            } else if (error.response?.status === 401) {
+                setMessage("Please login to create short links.");
+                setAlertType("warning");
             } else if (error.code === "ECONNABORTED" || error.message === "Network Error") {
                 setMessage("Network error. Check your connection.");
                 setAlertType("error");
+            } else if (error.message === "You must be logged in to continue.") {
+                setMessage(error.message);
+                setAlertType("warning");
             } else {
                 setMessage("Something went wrong. Try again.");
                 setAlertType("error");
@@ -156,7 +165,7 @@ const Input = () => {
                     ) : (
                         <button
                             onClick={handleClick}
-                            className="w-full hover:cursor-pointer text-lg rounded-sm bg-gradient-to-r from-orange-400 to-purple-400 h-10 text-white hover:opacity-90 transition"
+                            className="w-full hover:cursor-pointer text-lg rounded-sm bg-linear-to-r from-orange-400 to-purple-400 h-10 text-white hover:opacity-90 transition"
                         >
                             Generate Short URL
                         </button>

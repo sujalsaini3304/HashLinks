@@ -2,17 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { Copy, Check, Trash2, Link as LinkIcon } from "lucide-react";
 import Footer from "../components/Footer";
-
-const initialData = [
-  { originalURL: "https://www.google.com/search?q=reactasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd", shortCode: "abcdefghij", clicks: 24, expiresAt: "2026-03-27T10:00:00Z" },
-  { originalURL: "https://github.com", shortCode: "klmnopqrst", clicks: 102, expiresAt: "2026-06-15T12:30:00Z" },
-  { originalURL: "https://amazon.in", shortCode: "uvwxyz0123", clicks: 8, expiresAt: "2026-09-01T09:15:00Z" },
-  { originalURL: "https://stackoverflow.com", shortCode: "pqrstuvwxy", clicks: 57, expiresAt: "2026-07-20T08:00:00Z" },
-  { originalURL: "https://figma.com", shortCode: "zyxwvutsrq", clicks: 34, expiresAt: "2026-05-10T14:00:00Z" },
-  { originalURL: "https://tailwindcss.com", shortCode: "mnbvcxzlkj", clicks: 19, expiresAt: "2026-03-20T11:00:00Z" },
-  { originalURL: "https://npmjs.com", shortCode: "hgfdsapoiu", clicks: 76, expiresAt: "2026-08-05T09:00:00Z" },
-  { originalURL: "https://vercel.com", shortCode: "ytrewqlkjh", clicks: 45, expiresAt: "2026-10-01T00:00:00Z" },
-];
+import { getAuthHeaders } from "../utils/authHeaders";
 
 const PAGE_SIZE = 10;
 
@@ -114,14 +104,12 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const headers = await getAuthHeaders();
+
         const res = await fetch(`${import.meta.env.VITE_HOSTSERVER}/api/fetch`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: "sujalsaini3304@gmail.com", // replace dynamically later
-          }),
+          headers,
+          body: JSON.stringify({}),
         });
 
         const result = await res.json();
@@ -138,7 +126,6 @@ export default function Dashboard() {
   }, []);
 
 
-
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
     check();
@@ -152,7 +139,7 @@ export default function Dashboard() {
   //   setTimeout(() => setCopied(null), 1500);
   // };
 
-  
+
   const handleCopy = async (code) => {
     const text = `https://hlserver.vercel.app/${code}`;
 
@@ -198,14 +185,13 @@ export default function Dashboard() {
     if (!window.confirm("Are you sure?")) return;
 
     try {
+      const headers = await getAuthHeaders();
+
       const res = await fetch(`${import.meta.env.VITE_HOSTSERVER}/api/delete`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({
           id: id,
-          email: "sujalsaini3304@gmail.com", // dynamic later
         }),
       });
 
