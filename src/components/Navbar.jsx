@@ -1,7 +1,7 @@
 import React from 'react'
 import Icon from '/hash.png'
 import ArrowIcon from '/arrow.png'
-import { ArrowBigLeft, ArrowLeftIcon, Gauge, LogOutIcon } from 'lucide-react'
+import { ArrowBigLeft, ArrowLeftIcon, Gauge, Lock, LogOutIcon } from 'lucide-react'
 import Avatar from '@mui/material/Avatar';
 import { auth } from "../../firebase.config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -129,9 +129,12 @@ const Navbar = () => {
                 <Link to={'/dashboard'} replace >
                     <MenuItem onClick={handleClose} className='gap-2' ><Gauge size={22} /> Dashboard</MenuItem>
                 </Link>
-                <MenuItem onClick={()=>{
+                <MenuItem onClick={() => {
                     handleLogout();
                 }} className='gap-2' > <LogOutIcon size={22} /> Logout</MenuItem>
+                <MenuItem onClick={() => {
+                    alert("coming soon...");
+                }} className='gap-2 ' style={{backgroundColor : "#32cd32", margin:"2px" , borderRadius:"4px" , color:"white" }} > <Lock size={22} color='white' /> Upgrade</MenuItem>
             </Menu>
         </>
     )

@@ -214,12 +214,28 @@ export default function Dashboard() {
   };
 
   if (data.length === 0) {
-    return <div style={{ textAlign: "center", marginTop: "50px" }}>No URLs Found</div>;
+    return (
+      <>
+        <div className="max-w-350 mx-auto px-3" >
+          <Navbar />
+          <div className=" flex justify-self-center flex-col mt-10 " >
+            <img
+              src="/animal.png"
+              alt="not-found"
+              height={120}
+              width={120}
+            />
+            <div className="text-gray-400" >No URLs Found</div>
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (
 
     <div className="max-w-350 mx-auto px-3">
+
       <style>{`
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
