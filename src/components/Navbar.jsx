@@ -27,14 +27,14 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                <div>
+                {/* <div>
                     <ul type='none' className='flex items-center text-lg'>
                         <li></li>
                         <li onClick={()=>{
                             alert("Coming soon");
                         }} className='hover:cursor-pointer hover:underline hover:font-semibold flex items-center gap-1 ' > <LogOutIcon size={20} /> Logout</li>
                     </ul>
-                </div>
+                </div> */}
 
             </div>
         </>
